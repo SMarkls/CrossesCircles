@@ -21,6 +21,7 @@ namespace CrossesCircles
     public partial class MainWindow : Window
     {
         Image[,] ImageArr = new Image[3, 3];
+        Button[,] ButtonArr = new Button[3, 3];
         BitmapImage circle = new BitmapImage(new Uri("../Resources/Circle.png", UriKind.Relative));
         BitmapImage cross = new BitmapImage(new Uri("../Resources/Cross.png", UriKind.Relative));
         BitmapImage source;
@@ -31,8 +32,22 @@ namespace CrossesCircles
             grid = FindName("MainGrid") as Grid;
             source = cross;
             InitImagesArray();
+            InitButtonsArray();
         }
 
+        private void ResetBtnClicked(object sender, RoutedEventArgs e)
+        {
+            foreach(var b in ButtonArr)
+            {
+                b.Visibility = Visibility.Visible;
+                b.Click -= BtnClicked;
+                b.Click += BtnClicked;
+            }
+            foreach (var c in ImageArr)
+                c.Source = null;
+            StatusTextBlock.Text = "Игра началась!";
+            source = cross;
+        }
         #region Button Clicked and Initializing image
         private void BtnClicked(object sender, RoutedEventArgs e)
         {
@@ -43,7 +58,12 @@ namespace CrossesCircles
             Image image = FindImage(row, column);
             image.Source = source;
             source = source == circle ? cross : circle;
-            MessageBox.Show(CheckForWinner().ToString());
+            if (CheckForWinner())
+            {
+                foreach(var b in ButtonArr)
+                    b.Click -= BtnClicked;
+                StatusTextBlock.Text = "Игра окончена!";
+            }
         }
         /// <summary>
         /// Find the location of Image by row and column of the Grid.
@@ -61,8 +81,9 @@ namespace CrossesCircles
             return null;
         }
         #endregion
-        //TODO: масштабирование окна
-    
+
+
+        #region Initializing Arrays
         private void InitImagesArray()
         {
             int i = 0;
@@ -79,6 +100,24 @@ namespace CrossesCircles
 
             }
         }
+
+        private void InitButtonsArray()
+        {
+            int i = 0;
+            int j = 0;
+            foreach (var b in grid.Children.OfType<Button>().Where(x => Grid.GetColumn(x) != 5).OrderBy(x => Grid.GetRow(x)).ThenBy(x => Grid.GetColumn(x)))
+            {
+                ButtonArr[i, j] = b;
+                j++;
+                if (j == 3)
+                {
+                    j = 0;
+                    i++;
+                }
+            }
+
+        }
+        #endregion
         private bool CheckForWinner()
         {
             for (int i = 0; i < 2; i++) // Horisontal Lines
@@ -116,3 +155,4 @@ namespace CrossesCircles
 
     }
 }
+        //TODO: масштабирование окна
