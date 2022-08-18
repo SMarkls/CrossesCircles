@@ -79,5 +79,15 @@ namespace CrossesCircles.Properties {
                 return ((byte[])(obj));
             }
         }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
+        internal static byte[] tmp {
+            get {
+                object obj = ResourceManager.GetObject("tmp", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }
