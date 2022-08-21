@@ -68,12 +68,6 @@
         <Button Grid.Column="2" Grid.Row="3"/>
         <Button Grid.Column="3" Grid.Row="2"/>
         <Button Grid.Column="3" Grid.Row="3"/>
-        <!--<Button.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform ScaleX="0" ScaleY="0"/>
-                </TransformGroup>
-            </Button.RenderTransform>
-        </Button>-->
 
         <Image Grid.Column="1" Grid.Row="1" Margin="5"/>
         <Image Grid.Column="2" Grid.Row="1" Margin="5"/>

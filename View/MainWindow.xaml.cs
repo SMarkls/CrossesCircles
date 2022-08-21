@@ -36,7 +36,7 @@ namespace CrossesCircles
                 b.Visibility = Visibility.Visible;
                 b.Click -= BtnClicked;
                 b.Click += BtnClicked;
-                b.Margin = new Thickness(5);
+                b.RenderTransform = new ScaleTransform(1, 1);
             }
             foreach (var c in ImageArr)
                 c.Source = null;
@@ -61,8 +61,9 @@ namespace CrossesCircles
                 foreach (var b in ButtonArr)
                     b.Click -= BtnClicked;
                 StatusTextBlock.Text = "Игра окончена!";
+
             }
-        }
+        } 
         /// <summary>
         /// Find the location of Image by row and column of the Grid.
         /// </summary>
