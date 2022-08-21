@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using System.Windows.Media;
 
 namespace CrossesCircles
 {
@@ -47,8 +48,8 @@ namespace CrossesCircles
         #region Button Clicked and Initializing image
         private async void BtnClicked(object sender, RoutedEventArgs e)
         {
+            await Task.Delay(250);
             var button = sender as Button;
-            await AnimateBtn(button);
             button.Visibility = Visibility.Collapsed;
             int column = Grid.GetColumn(button);
             int row = Grid.GetRow(button);
@@ -154,9 +155,9 @@ namespace CrossesCircles
 
         private async Task AnimateBtn(Button button)
         {
-            for (int i = 5; i < 50; i++)
+            for (int i = 5; i < 25; i++)
             {
-                button.Margin = new Thickness(i);
+                button.Margin = new Thickness(i * 2);
                 await Task.Delay(1);
             }
         }
