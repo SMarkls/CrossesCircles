@@ -1,17 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
+using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace CrossesCircles
 {
@@ -26,6 +18,7 @@ namespace CrossesCircles
         BitmapImage cross = new BitmapImage(new Uri("../Resources/Cross.png", UriKind.Relative));
         BitmapImage source;
         Grid grid;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -42,16 +35,20 @@ namespace CrossesCircles
                 b.Visibility = Visibility.Visible;
                 b.Click -= BtnClicked;
                 b.Click += BtnClicked;
+                b.Margin = new Thickness(5);
             }
             foreach (var c in ImageArr)
                 c.Source = null;
             StatusTextBlock.Text = "Игра началась!";
             source = cross;
         }
+
+
         #region Button Clicked and Initializing image
-        private void BtnClicked(object sender, RoutedEventArgs e)
+        private async void BtnClicked(object sender, RoutedEventArgs e)
         {
             var button = sender as Button;
+            await AnimateBtn(button);
             button.Visibility = Visibility.Collapsed;
             int column = Grid.GetColumn(button);
             int row = Grid.GetRow(button);
@@ -60,7 +57,7 @@ namespace CrossesCircles
             source = source == circle ? cross : circle;
             if (CheckForWinner())
             {
-                foreach(var b in ButtonArr)
+                foreach (var b in ButtonArr)
                     b.Click -= BtnClicked;
                 StatusTextBlock.Text = "Игра окончена!";
             }
@@ -118,6 +115,7 @@ namespace CrossesCircles
 
         }
         #endregion
+
         private bool CheckForWinner()
         {
             for (int i = 0; i < 2; i++) // Horisontal Lines
@@ -153,6 +151,15 @@ namespace CrossesCircles
             return false;
         }
 
+
+        private async Task AnimateBtn(Button button)
+        {
+            for (int i = 5; i < 50; i++)
+            {
+                button.Margin = new Thickness(i);
+                await Task.Delay(1);
+            }
+        }
     }
 }
         //TODO: масштабирование окна
