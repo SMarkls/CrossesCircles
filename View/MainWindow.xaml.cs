@@ -151,16 +151,6 @@ namespace CrossesCircles
                 return true;    
             return false;
         }
-
-
-        private async Task AnimateBtn(Button button)
-        {
-            for (int i = 5; i < 25; i++)
-            {
-                button.Margin = new Thickness(i * 2);
-                await Task.Delay(1);
-            }
-        }
     }
 }
         //TODO: масштабирование окна
