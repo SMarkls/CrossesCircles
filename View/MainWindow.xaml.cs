@@ -120,7 +120,7 @@ namespace CrossesCircles
 
         private bool CheckForWinner()
         {
-            for (int i = 0; i < 2; i++) // Horisontal Lines
+            for (int i = 0; i <= 2; i++) // Horisontal Lines
             {
                 int k = 0;
                 for (int j = 0; j < 2; j++)
@@ -132,7 +132,7 @@ namespace CrossesCircles
                 if (k != 1) continue;
                 return true;
             }
-            for (int i = 0; i < 2; i++) // Vertical Lines
+            for (int i = 0; i <= 2; i++) // Vertical Lines
             {
                 int k = 0;
                 for (int j = 0; j < 2; j++)
