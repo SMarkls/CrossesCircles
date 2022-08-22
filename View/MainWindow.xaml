@@ -13,7 +13,6 @@
             <Style.Setters>
                 <Setter Property="BorderThickness" Value="0"/>
                 <Setter Property="Margin" Value="5"/>
-                <EventSetter Event="Click" Handler="BtnClicked"/>
                 <Setter Property="RenderTransform">
                     <Setter.Value>
                         <ScaleTransform ScaleX="1" ScaleY="1"/>
@@ -59,15 +58,15 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         
-        <Button Grid.Column="1" Grid.Row="1"/>
-        <Button Grid.Column="2" Grid.Row="1"/>
-        <Button Grid.Column="3" Grid.Row="1"/>
-        <Button Grid.Column="1" Grid.Row="2"/>
-        <Button Grid.Column="1" Grid.Row="3"/>
-        <Button Grid.Column="2" Grid.Row="2"/>
-        <Button Grid.Column="2" Grid.Row="3"/>
-        <Button Grid.Column="3" Grid.Row="2"/>
-        <Button Grid.Column="3" Grid.Row="3"/>
+        <Button Grid.Column="1" Grid.Row="1" Click="BtnClicked"/>
+        <Button Grid.Column="2" Grid.Row="1" Click="BtnClicked"/>
+        <Button Grid.Column="3" Grid.Row="1" Click="BtnClicked"/>
+        <Button Grid.Column="1" Grid.Row="2" Click="BtnClicked"/>
+        <Button Grid.Column="1" Grid.Row="3" Click="BtnClicked"/>
+        <Button Grid.Column="2" Grid.Row="2" Click="BtnClicked"/>
+        <Button Grid.Column="2" Grid.Row="3" Click="BtnClicked"/>
+        <Button Grid.Column="3" Grid.Row="2" Click="BtnClicked"/>
+        <Button Grid.Column="3" Grid.Row="3" Click="BtnClicked"/>
 
         <Image Grid.Column="1" Grid.Row="1" Margin="5"/>
         <Image Grid.Column="2" Grid.Row="1" Margin="5"/>
