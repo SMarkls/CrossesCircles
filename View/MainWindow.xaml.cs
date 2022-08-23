@@ -48,7 +48,7 @@ namespace CrossesCircles
         #region Button Clicked and Initializing image
         private async void BtnClicked(object sender, RoutedEventArgs e)
         {
-            await Task.Delay(250);
+            await Task.Delay(250); // Duration of animtion.
             var button = sender as Button;
             button.Visibility = Visibility.Collapsed;
             int column = Grid.GetColumn(button);
@@ -56,11 +56,13 @@ namespace CrossesCircles
             Image image = FindImage(row, column);
             image.Source = source;
             source = source == circle ? cross : circle;
-            if (CheckForWinner())
+            var resultOfStep = CheckForWinner();
+            if (resultOfStep.Item1)
             {
                 foreach (var b in ButtonArr)
                     b.Click -= BtnClicked;
-                StatusTextBlock.Text = "Игра окончена!";
+                var winner = resultOfStep.Item2 == cross ? "Крестик" : "Нолик";
+                StatusTextBlock.Text = $"Игра окончена.\nПобедил: {winner}";
 
             }
         } 
@@ -118,7 +120,7 @@ namespace CrossesCircles
         }
         #endregion
 
-        private bool CheckForWinner()
+        private (bool, ImageSource, int, int) CheckForWinner()
         {
             for (int i = 0; i <= 2; i++) // Horisontal Lines
             {
@@ -130,7 +132,7 @@ namespace CrossesCircles
                     k = j;
                 }
                 if (k != 1) continue;
-                return true;
+                return (true, ImageArr[i, k].Source, i, k);
             }
             for (int i = 0; i <= 2; i++) // Vertical Lines
             {
@@ -142,15 +144,15 @@ namespace CrossesCircles
                     k = j;
                 }
                 if (k != 1) continue;
-                return true;
+                return (true, ImageArr[i, k].Source, i, k);
             }
             if (ImageArr[1, 1].Source == null)
-                return false;
+                return (false, null, -1, -1);
             if (ImageArr[0, 0].Source == ImageArr[1, 1].Source && ImageArr[2, 2].Source == ImageArr[1, 1].Source) // diagonals
-                return true;
+                return (true, ImageArr[1, 1].Source, 0, 0);
             if (ImageArr[2, 0].Source == ImageArr[1, 1].Source && ImageArr[0, 2].Source == ImageArr[1, 1].Source)
-                return true;    
-            return false;
+                return (true, ImageArr[1, 1].Source, 2, 0);
+            return (false, null, -1, -1);
         }
     }
 }
