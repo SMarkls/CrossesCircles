@@ -10,12 +10,20 @@ namespace CrossesCircles.Model
 {
     static class Checker
     {
+        public enum Line
+        {
+            Vertical,
+            Horizontal,
+            DiagonalOrNull
+        };
+
+
         /// <summary>
         /// Возвращает кортеж значений: bool - есть ли победная комбинация; ImageSource - картинка победной комбинации; int, int - координаты одной из победивших ячеек
         /// </summary>
         /// <param name="ImageArr">Массив изображений</param>
         /// <returns></returns>
-        public static (bool, ImageSource, int, int) CheckForWinner(Image[, ] ImageArr)
+        public static (bool, ImageSource, int, int, Line) CheckForWinner(Image[, ] ImageArr)
         {
             for (int i = 0; i <= 2; i++) // Horisontal Lines
             {   
@@ -27,7 +35,7 @@ namespace CrossesCircles.Model
                     k = j;
                 }
                 if (k != 1) continue;
-                return (true, ImageArr[i, k].Source, i, k);
+                return (true, ImageArr[i, k].Source, i, k, Line.Horizontal);
             }
             for (int i = 0; i <= 2; i++) // Vertical Lines
             {
@@ -39,15 +47,15 @@ namespace CrossesCircles.Model
                     k = j;
                 }
                 if (k != 1) continue;
-                return (true, ImageArr[k, i].Source, k, i);
+                return (true, ImageArr[k, i].Source, k, i, Line.Vertical);
             }
             if (ImageArr[1, 1].Source == null)
-                return (false, null, -1, -1);
+                return (false, null, -1, -1, Line.DiagonalOrNull);
             if (ImageArr[0, 0].Source == ImageArr[1, 1].Source && ImageArr[2, 2].Source == ImageArr[1, 1].Source) // diagonals
-                return (true, ImageArr[1, 1].Source, 0, 0);
+                return (true, ImageArr[1, 1].Source, 0, 0, Line.DiagonalOrNull);
             if (ImageArr[2, 0].Source == ImageArr[1, 1].Source && ImageArr[0, 2].Source == ImageArr[1, 1].Source)
-                return (true, ImageArr[1, 1].Source, 2, 0);
-            return (false, null, -1, -1);
+                return (true, ImageArr[1, 1].Source, 2, 0, Line.DiagonalOrNull);
+            return (false, null, -1, -1, Line.DiagonalOrNull);
         }
     }
 }

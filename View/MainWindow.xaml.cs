@@ -67,7 +67,7 @@ namespace CrossesCircles
                     b.Click -= BtnClicked;
                 var winner = resultOfStep.Item2 == cross ? "Крестик" : "Нолик";
                 StatusTextBlock.Text = $"Игра окончена.\nПобедил: {winner}";
-                Animation.AnimateWin(resultOfStep.Item3, resultOfStep.Item4, ImageArr);
+                Animation.AnimateWin(resultOfStep.Item3, resultOfStep.Item4, resultOfStep.Item5, ImageArr);
 
             }
         } 
