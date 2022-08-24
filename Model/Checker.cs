@@ -39,7 +39,7 @@ namespace CrossesCircles.Model
                     k = j;
                 }
                 if (k != 1) continue;
-                return (true, ImageArr[i, k].Source, k, i);
+                return (true, ImageArr[k, i].Source, k, i);
             }
             if (ImageArr[1, 1].Source == null)
                 return (false, null, -1, -1);
