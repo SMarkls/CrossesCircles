@@ -50,8 +50,9 @@ namespace CrossesCircles
         #region Button Clicked and Initializing image
         private async void BtnClicked(object sender, RoutedEventArgs e)
         {
-            await Task.Delay(250); // Duration of animtion.
             var button = sender as Button;
+            button.Click -= BtnClicked;
+            await Task.Delay(250); // Duration of animtion.
             button.Visibility = Visibility.Collapsed;
             int column = Grid.GetColumn(button);
             int row = Grid.GetRow(button);
