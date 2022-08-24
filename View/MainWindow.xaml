@@ -15,6 +15,11 @@
                 <Setter Property="Stroke" Value="Black"/>
             </Style.Setters>
         </Style>
+        <Style TargetType="Image">
+            <Style.Setters>
+                <Setter Property="RenderTransformOrigin" Value="0.5, 0.5"/>
+            </Style.Setters>
+        </Style>
         <Style TargetType="Button">
             <Style.Setters>
                 <Setter Property="BorderThickness" Value="0"/>
