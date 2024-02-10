@@ -1,127 +1,118 @@
 ﻿using System;
-using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
-using System.Windows.Media;
+using CrossesCircles.Components;
 using CrossesCircles.Model;
+using CrossesCircles.Utils;
 
+namespace CrossesCircles.View;
 
-namespace CrossesCircles
+public partial class MainWindow
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : Window
+    private byte currentState;
+    private readonly Grid grid;
+    private readonly PlayField playField;
+    private Image?[,] images = new Image?[3, 3];
+    private FieldElementFactory factory = new();
+
+    public MainWindow()
     {
-        Image[,] ImageArr = new Image[3, 3];
-        Button[,] ButtonArr = new Button[3, 3];
-        BitmapImage circle = new BitmapImage(new Uri("../Resources/Circle.png", UriKind.Relative));
-        BitmapImage cross = new BitmapImage(new Uri("../Resources/Cross.png", UriKind.Relative));
-        BitmapImage source;
-        Grid grid;
+        InitializeComponent();
+        grid = FindName("MainGrid") as Grid ?? throw new InvalidOperationException("Grid is null");
+        playField = new PlayField();
+        currentState = 0;
+        InitGrid();
+    }
 
-        public MainWindow()
+    private void ResetBtnClicked(object sender, RoutedEventArgs e)
+    {
+        for (int i = 0; i < 3; i++)
         {
-            InitializeComponent();
-            grid = FindName("MainGrid") as Grid;
-            source = cross;
-            InitImagesArray();
-            InitButtonsArray();
-        }
-
-        private void ResetBtnClicked(object sender, RoutedEventArgs e)
-        {
-            foreach(var b in ButtonArr)
+            for (int j = 0; j < 3; j++)
             {
-                b.Visibility = Visibility.Visible;
-                b.Click -= BtnClicked;
-                b.Click += BtnClicked;
-                b.RenderTransform = new ScaleTransform(1, 1);
-            }
-            foreach (var c in ImageArr)
-                c.Source = null;
-            StatusTextBlock.Text = "Игра началась!";
-            source = cross;
-        }
-
-
-        #region Button Clicked and Initializing image
-        private async void BtnClicked(object sender, RoutedEventArgs e)
-        {
-            var button = sender as Button;
-            button.Click -= BtnClicked;
-            await Task.Delay(250); // Duration of animtion.
-            button.Visibility = Visibility.Collapsed;
-            int column = Grid.GetColumn(button);
-            int row = Grid.GetRow(button);
-            Image image = FindImage(row, column);
-            image.Source = source;
-            source = source == circle ? cross : circle;
-            var resultOfStep = Checker.CheckForWinner(ImageArr);
-            if (resultOfStep.Item1)
-            {
-                foreach (var b in ButtonArr)
-                    b.Click -= BtnClicked;
-                var winner = resultOfStep.Item2 == cross ? "Крестик" : "Нолик";
-                StatusTextBlock.Text = $"Игра окончена.\nПобедил: {winner}";
-                Animation.AnimateWin(resultOfStep.Item3, resultOfStep.Item4, resultOfStep.Item5, ImageArr);
-
-            }
-        } 
-
-        /// <summary>
-        /// Находит изображение в сетке по строке и колонке кнопки..
-        /// </summary>
-        /// <param name="row">Строка кнопки в сетке</param>
-        /// <param name="column">Колонка кнопки в сетке</param>
-        /// <returns></returns>
-        Image FindImage(int row, int column)
-        {
-            foreach(var c in ImageArr)
-            {
-                if (Grid.GetRow(c) == row && Grid.GetColumn(c) == column)
-                    return c;
-            }
-            return null;
-        }
-        #endregion
-        #region Initializing Arrays
-        private void InitImagesArray()
-        {
-            int i = 0;
-            int j = 0;
-            foreach (var c in grid.Children.OfType<Image>().OrderBy(x => Grid.GetRow(x)).ThenBy(x => Grid.GetColumn(x)))
-            {
-                ImageArr[i, j] = c;
-                j++;
-                if (j == 3)
-                {
-                    j = 0;
-                    i++;
-                }
-
+                playField.Field[i, j] = '.';
             }
         }
 
-        private void InitButtonsArray()
+        foreach (var image in images)
         {
-            int i = 0;
-            int j = 0;
-            foreach (var b in grid.Children.OfType<Button>().Where(x => Grid.GetColumn(x) != 5).OrderBy(x => Grid.GetRow(x)).ThenBy(x => Grid.GetColumn(x)))
-            {
-                ButtonArr[i, j] = b;
-                j++;
-                if (j == 3)
-                {
-                    j = 0;
-                    i++;
-                }
-            }
-
+            grid.Children.Remove(image);     
         }
-        #endregion
+
+        ClearImageArray();
+        InitGrid();
+        currentState = 0;
+        StatusTextBlock.Text = "Игра началась!";
+    }
+
+    public void ClearImageArray()
+    {
+        int width = images.GetLength(0);
+        int height = images.GetLength(1);
+
+        for (int i = 0; i < width; i++)
+        {
+            for (int j = 0; j < height; j++)
+            {
+                images[i, j] = null;
+            }
+        }
+    }
+
+    private async void BtnClicked(object sender, RoutedEventArgs e)
+    {
+        if (sender is not OneClickableButton button) 
+            throw new ArgumentNullException(nameof(button));
+        if (button.IsClicked)
+            return;
+        button.IsClicked = true;
+
+        await Task.Delay(250); // Duration of animtion.
+        button.Visibility = Visibility.Collapsed;
+
+        int column = Grid.GetColumn(button) - 1;
+        int row = Grid.GetRow(button) - 1;
+
+        playField.Field[row, column] = currentState % 2 == 0 ? 'x' : 'o';
+        UpdateGrid(column, row);
+        var resultOfStep = Checker.CheckForWinner(playField.Field);
+        if (resultOfStep != null)
+        {
+            var winner = resultOfStep.WinnerShape == 'x' ? "Крестик" : "Нолик";
+            StatusTextBlock.Text = $"Игра окончена.\nПобедил: {winner}";
+            Animation.AnimateWin((int)resultOfStep.TopLeftSideCoordinate.X, (int)resultOfStep.TopLeftSideCoordinate.Y, resultOfStep.WinnerLineType, images);
+        }
+
+        currentState++;
+    }
+
+    private void UpdateGrid(int column, int row)
+    {
+        var symbol = playField.Field[row, column];
+        var element = factory.GetElement(symbol);
+
+        switch (element)
+        {
+            case Image image:
+                images[row, column] = image;
+                break;
+            case Button btn:
+                btn.Click += BtnClicked;
+                break;
+        }
+
+        grid.Children.Add(element);
+        Grid.SetColumn(element, column + 1);
+        Grid.SetRow(element, row + 1);
+    }
+
+    private void InitGrid()
+    {
+        for (int i = 0; i < 3; i++)
+        for (int j = 0; j < 3; j++)
+        {
+            UpdateGrid(j, i);
+        }
     }
 }
-        //TODO: масштабирование окна
